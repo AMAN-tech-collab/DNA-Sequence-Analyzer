@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GeneScope DNA Analyzer</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="layout">
+      <aside>
+        <div class="brand">
+          🧬 <span>GeneScope<small>DNA ANALYTICS</small></span>
+        </div>
+        <nav>
+          <a class="active" href="#home">▦ Overview</a
+          ><a href="#analyzer">⌕ DNA Analyzer</a><a href="#results">◉ Results</a
+          ><a href="#history">◷ History</a>
+        </nav>
+        <div class="status">● Analysis engine ready</div>
+        <small class="sidefoot"><br /></small>
+      </aside>
+      <main>
+        <header id="home">
+          <div>
+            <small class="eyebrow">BIOINFORMATICS WORKSPACE</small>
+            <h1>DNA Sequence Analyzer</h1>
+            <p>Explore, compare, and understand DNA sequences.</p>
+          </div>
+          <span class="ready">● System ready</span>
+        </header>
+        <section class="stats">
+          <article>
+            <label>Sequences analyzed</label><strong id="total">0</strong
+            ><small>In this browser session</small>
+          </article>
+          <article>
+            <label>Latest GC content</label><strong id="latestGC">—</strong
+            ><small>Guanine + Cytosine ratio</small>
+          </article>
+          <article>
+            <label>Match similarity</label><strong id="latestMatch">—</strong
+            ><small>Between input sequences</small>
+          </article>
+        </section>
+        <section class="panel" id="analyzer">
+          <div class="heading">
+            <div>
+              <small class="eyebrow">INPUT WORKSPACE</small>
+              <h2>Analyze DNA sequences</h2>
+              <p>
+                Paste a sequence or upload a FASTA/TXT file. Accepted bases: A,
+                T, C, G, N.
+              </p>
+            </div>
+            <button id="example" class="light">Load example</button>
+          </div>
+          <div class="inputs">
+            <div class="inputbox">
+              <label>Sequence A <em>REFERENCE</em></label
+              ><textarea
+                id="a"
+                placeholder="Paste DNA sequence (ATGCGTAC...)"
+              ></textarea>
+              <div class="under">
+                <span id="countA">0 bases</span
+                ><label class="upload"
+                  >＋ Upload FASTA/TXT<input
+                    id="fileA"
+                    type="file"
+                    accept=".fasta,.fa,.fna,.txt"
+                /></label>
+              </div>
+            </div>
+            <div class="inputbox">
+              <label>Sequence B <em>COMPARISON (OPTIONAL)</em></label
+              ><textarea
+                id="b"
+                placeholder="Paste another DNA sequence..."
+              ></textarea>
+              <div class="under">
+                <span id="countB">0 bases</span
+                ><label class="upload"
+                  >＋ Upload FASTA/TXT<input
+                    id="fileB"
+                    type="file"
+                    accept=".fasta,.fa,.fna,.txt"
+                /></label>
+              </div>
+            </div>
+          </div>
+          <div class="action">
+            <span>ⓘ Spaces and FASTA headers are removed automatically.</span
+            ><button id="run">Run analysis →</button>
+          </div>
+          <p id="error"></p>
+        </section>
+        <section id="results">
+          <div class="heading">
+            <div>
+              <small class="eyebrow">RESULTS</small>
+              <h2>Sequence insights</h2>
+            </div>
+            <button id="export" class="light" disabled>↓ Export report</button>
+          </div>
+          <div class="twocol">
+            <article class="panel">
+              <div class="heading">
+                <div>
+                  <h3>Nucleotide composition</h3>
+                  <p>Base distribution in Sequence A</p>
+                </div>
+                <em>SEQUENCE A</em>
+              </div>
+              <div class="chart">
+                <canvas id="chart"></canvas
+                ><span id="emptyChart">Run analysis to view composition</span>
+              </div>
+              <div id="legend" class="legend"></div>
+            </article>
+            <article class="panel">
+              <h3>Sequence statistics</h3>
+              <p>Basic DNA properties</p>
+              <div class="metrics">
+                <div>Sequence length <b id="length">—</b></div>
+                <div>GC content <b id="gc">—</b></div>
+                <div>AT content <b id="at">—</b></div>
+                <div>Valid bases <b id="valid">—</b></div>
+                <div>Unknown bases (N) <b id="unknown">—</b></div>
+              </div>
+            </article>
+          </div>
+          <article class="panel">
+            <div class="heading">
+              <div>
+                <h3>Sequence comparison</h3>
+                <p>
+                  Position-wise comparison; unmatched trailing bases count as
+                  differences.
+                </p>
+              </div>
+              <em id="compareBadge">NO COMPARISON</em>
+            </div>
+            <div class="summary">
+              <div><small>Similarity</small><b id="similarity">—</b></div>
+              <div><small>Matching bases</small><b id="matches">—</b></div>
+              <div><small>Differences</small><b id="diffs">—</b></div>
+            </div>
+            <div id="alignment" class="alignment">
+              Add Sequence B to compare.
+            </div>
+            <div class="legend">🟢 Match　 🔴 Difference</div>
+          </article>
+          <article class="panel">
+            <h3>Differences detected</h3>
+            <p>Simple positional differences</p>
+            <div id="mutations" class="mutations">
+              Compare two sequences to identify differences.
+            </div>
+          </article>
+        </section>
+        <section class="panel history" id="history">
+          <div class="heading">
+            <div>
+              <small class="eyebrow">LOCAL ACTIVITY</small>
+              <h2>Recent analyses</h2>
+              <p>Stored in this browser using LocalStorage.</p>
+            </div>
+            <button id="clear" class="light">Clear history</button>
+          </div>
+          <div class="scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Length</th>
+                  <th>GC content</th>
+                  <th>Similarity</th>
+                </tr>
+              </thead>
+              <tbody id="historyRows">
+                <tr>
+                  <td colspan="4">No analyses yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <footer>
+          GeneScope DNA Analytics
+          <span>Educational demo · Not for clinical diagnosis</span>
+        </footer>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
